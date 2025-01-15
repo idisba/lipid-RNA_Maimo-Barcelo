@@ -1,0 +1,101 @@
+---
+author: "Plataforma Genòmica i Bioinformàtica-IdISBA"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme: journal
+    social: menu
+    source_code: embed
+editor_options: 
+  chunk_output_type: console
+self_contained: false
+runtime: shiny
+---
+
+```{r, include=FALSE}
+library(BiocManager)
+options(repos = BiocManager::repositories())
+
+logos <- paste("![](/usr/local/lib/R/site-library/rmdformats/templates/robobook/LogotipoCorporativo.png){width=15%}	![](/usr/local/lib/R/site-library/rmdformats/templates/robobook/Plataforma_Genomica.jpg){width=15%}	![](./rap.png){heigth=5% width=10%}")
+
+title_esp <- paste("NetRapp SA")
+title <- logos
+version <- paste0("Versió: ", Sys.time())
+```
+
+---
+pagetitle:  "`r title_esp`"
+subtitle: " `r title_esp`"     
+date: " `r version`"
+---
+
+```{r setup, include=FALSE}
+options(shiny.maxRequestSize=30*1024^2)
+knitr::opts_chunk$set(echo = F)
+library(WGCNA)
+library(igraph)
+```
+
+Sidebar {.sidebar}
+=====================================
+```{r}
+# Load data
+load("./WGCNA/RESULTATS/OBJECTES_R/datExpr0")
+load("./DATA_IN/source/expression_set.RData")
+data_rma <- data_rma_sa
+load("./WGCNA/RESULTATS/OBJECTES_R/net")
+TOM <- as.matrix(get(load("./WGCNA/RESULTATS/OBJECTES_R/net-block.1.RData")))
+annot <- data_rma@featureData@data
+
+# UI elements
+sliderInput("cor", h3("Correlation"), min = 0, max = 1, step = 0.01, value = 0)
+actionButton("network", "Previsualize network", class = "btn-success")
+actionButton("cyto_export", "Generate Cytoscape file", class = "btn-primary")
+radioButtons("dataset", h3("Select Data Set:"), c("Whole modules" = "all", "Filtered modules" = "filtered"))
+checkboxGroupInput("enrichment", h3("Select enrichment:"),
+                   c("GO ORA" = "GO_ORA", "GO GSEA" = "GO_GSEA", "KEGG ORA" = "KEGG_ORA", "KEGG GSEA" = "KEGG_GSEA", "FaD ME" = "motifs"))
+fileInput("lipid_file", "Choose lipid names (PENDING)", accept = "")
+uiOutput('variables')
+
+moduleColors <- labels2colors(net$colors)
+modules <- unique(moduleColors)
+
+outVar <- reactive({ modules })
+output$variables <- renderUI({
+  checkboxGroupInput("variables", h3("Select modules to network:"), outVar())
+})
+```
+
+Network
+=====================================
+
+Column {data-width='70%'}
+-----------------------------------------------------------------------
+
+### Network Visualization
+
+```{r}
+output$plot <- renderPlot({
+  withProgress(message = 'Ploting', value = 10, {
+    modules <- input$variables
+    probes <- colnames(datExpr0)
+    inModule <- is.finite(match(moduleColors, modules))
+
+    modProbes <- probes[inModule]
+    modTOM <- TOM[inModule, inModule]
+    modTOM[modTOM > input$cor] <- 1
+    modTOM[modTOM != 1] <- 0
+
+    network <- graph.adjacency(modTOM)
+    network <- simplify(network)
+    V(network)$color <- moduleColors[inModule]
+    network <- delete.vertices(network, degree(network) == 0)
+
+    set.seed(123)
+    plot(network, layout = layout.fruchterman.reingold(network),
+         vertex.label = NA, vertex.size = 5,
+         main = paste("Network for Modules:", paste(modules, collapse = ", ")))
+  })
+})
+```

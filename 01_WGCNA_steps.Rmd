@@ -1,0 +1,88 @@
+---
+title: "Documentation of RMD Scripts"
+author: "Plataforma Genòmica i Bioinformàtica-IdISBA"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+# Introduction
+
+This document provides an overview and explanation of the functionality and structure of the RMD scripts used in the project. Each section corresponds to a specific RMD file and describes its purpose, main features, and implementation details.
+
+# RMD Scripts Overview
+
+## Script: `NetRapp.Rmd`
+
+### Purpose
+This script implements an interactive Shiny application for visualizing and analyzing network data derived from WGCNA analysis.
+
+### Key Features
+- **Interactive Network Visualization**:
+  - Allows users to explore module-specific networks with customizable thresholds.
+  - Supports Cytoscape file generation for further exploration.
+
+- **User Inputs**:
+  - Slider to adjust correlation threshold (`cor`).
+  - Module selection using checkbox inputs (`variables`).
+  - Enrichment analysis options such as GO and KEGG.
+
+- **Outputs**:
+  - Network plots visualizing connections between genes within selected modules.
+  - Exportable Cytoscape files for advanced visualization.
+
+### Structure
+1. **Sidebar**:
+   - UI components for user interaction.
+2. **Network Visualization**:
+   - Dynamically generates and displays the network based on user inputs.
+3. **Enrichment Analysis**:
+   - Facilitates pathway and GO analysis of selected modules.
+
+---
+
+## Script: `WGCNA_v3.Rmd`
+
+### Purpose
+This script focuses on constructing and analyzing weighted gene co-expression networks (WGCNA).
+
+### Key Features
+- **Data Preparation**:
+  - Processes input expression data to filter low-expression genes.
+  
+- **Network Construction**:
+  - Uses soft-thresholding to define adjacency and TOM matrices.
+
+- **Module Detection**:
+  - Identifies modules of co-expressed genes using hierarchical clustering.
+
+- **Trait Association**:
+  - Relates module eigengenes to external traits.
+
+### Structure
+1. **Data Input and Cleaning**:
+   - Loads and preprocesses expression data.
+2. **Network Construction**:
+   - Computes adjacency and TOM matrices.
+3. **Module Detection**:
+   - Identifies gene modules and assigns colors.
+4. **Trait Association**:
+   - Correlates module eigengenes with clinical traits.
+
+# How to Use These Scripts
+
+1. **Execution**:
+   - Each RMD file can be run independently in RStudio to generate its respective outputs.
+   - Ensure all required packages (e.g., `WGCNA`, `igraph`, `shiny`) are installed.
+
+2. **Interactivity**:
+   - The Shiny application (`NetRapp.Rmd`) requires an active R session to display interactive elements.
+
+3. **Integration**:
+   - The outputs of `WGCNA_v3.Rmd` can be used as inputs for `NetRapp.Rmd`.
+
+# Conclusion
+This document summarizes the purpose and functionality of the RMD scripts. It serves as a guide for understanding how to use and integrate these scripts into the analysis pipeline. For more details, refer to the code comments and inline documentation within each script.
