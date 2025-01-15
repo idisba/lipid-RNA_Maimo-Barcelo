@@ -1,6 +1,7 @@
-Documentation of RMD Scripts
-Plataforma Genòmica i Bioinformàtica-IdISBA
-2025-01-14
+*Documentation of RMD Scripts*
+
+*Plataforma Genòmica i Bioinformàtica-IdISBA*
+
 
 # 1 Introduction
 
