@@ -70,6 +70,6 @@ This script focuses on constructing and analyzing weighted gene co-expression ne
       * Integration:
         The outputs of WGCNA_v3.Rmd can be used as inputs for NetRapp.Rmd.
 
-4 Conclusion
+
 
 This document summarizes the purpose and functionality of the RMD scripts. It serves as a guide for understanding how to use and integrate these scripts into the analysis pipeline. For more details, refer to the code comments and inline documentation within each script.
