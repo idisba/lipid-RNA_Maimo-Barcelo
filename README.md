@@ -1,6 +1,6 @@
 *Documentation of RMD Scripts*
 
-*Plataforma Genòmica i Bioinformàtica-IdISBA*
+*Plataforma Genòmica i Bioinformàtica-IdISBa*
 
 
 # 1 Introduction
